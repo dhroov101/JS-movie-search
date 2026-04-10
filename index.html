@@ -23,6 +23,33 @@
         autocomplete="off"
       />
     </div>
+    <div class="filters" id="filters">
+
+        <div class="filter-group">
+            <label for="type-filter">Type</label>
+            <select id="type-filter">
+                <option value="all">All</option>
+                <option value="movie">Films only</option>
+                <option value="tv">TV only</option>
+            </select>
+        </div>
+
+        <div class="filter-group">
+            <label for="year-filter">From year: <span id="year-value">2000</span></label>
+            <input type="range" id="year-filter" min="1950" max="2024" value="2000" step="1">
+        </div>
+
+        <div class="filter-group">
+            <label for="sort-filter">Sort by</label>
+            <select id="sort-filter">
+                <option value="default">Relevance</option>
+                <option value="year-desc">Newest first</option>
+                <option value="year-asc">Oldest first</option>
+                <option value="title-asc">Title A–Z</option>
+            </select>
+        </div>
+
+    </div>
 
     <div id="status" class="status hidden"></div>
 

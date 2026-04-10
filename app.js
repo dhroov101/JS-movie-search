@@ -5,6 +5,8 @@ const searchInput = document.querySelector('#search-input')
 const resultsGrid = document.querySelector('#results')
 const statusDiv   = document.querySelector('#status')
 
+let allMovies = []
+
 function showStatus(message) {
   statusDiv.textContent = message
   statusDiv.classList.remove('hidden')
@@ -74,6 +76,48 @@ function renderMovies(movies) {
   resultsGrid.innerHTML = filtered.map(createCard).join('')
 }
 
+function applyFilters() {
+  const type    = document.querySelector('#type-filter').value
+  const minYear = parseInt(document.querySelector('#year-filter').value)
+  const sort    = document.querySelector('#sort-filter').value
+
+  let results = allMovies
+    .filter(m => type === 'all' || m.media_type === type)
+    .filter(m => {
+      const year = parseInt((m.release_date ?? m.first_air_date ?? '0').slice(0, 4))
+      return year >= minYear
+    })
+
+  if (sort === 'year-desc') {
+    results = results.sort((a, b) => {
+      const yearA = parseInt((a.release_date ?? a.first_air_date ?? '0').slice(0, 4))
+      const yearB = parseInt((b.release_date ?? b.first_air_date ?? '0').slice(0, 4))
+      return yearB - yearA
+    })
+  } else if (sort === 'year-asc') {
+    results = results.sort((a, b) => {
+      const yearA = parseInt((a.release_date ?? a.first_air_date ?? '0').slice(0, 4))
+      const yearB = parseInt((b.release_date ?? b.first_air_date ?? '0').slice(0, 4))
+      return yearA - yearB
+    })
+  } else if (sort === 'title-asc') {
+    results = results.sort((a, b) => {
+      const titleA = (a.title ?? a.name ?? '').toLowerCase()
+      const titleB = (b.title ?? b.name ?? '').toLowerCase()
+      return titleA.localeCompare(titleB)
+    })
+  }
+
+  if (results.length === 0) {
+    resultsGrid.innerHTML = ''
+    showStatus('No results match your filters.')
+    return
+  }
+
+  showStatus(`${results.length} result${results.length > 1 ? 's' : ''}`)
+  resultsGrid.innerHTML = results.map(createCard).join('')
+}
+
 function showSkeletons() {
   const skeletons = Array.from({ length: 8 }, () => `
     <div class="movie-card skeleton">
@@ -93,6 +137,7 @@ async function handleSearch(query) {
   if (trimmed.length < 2) {
     hideStatus()
     resultsGrid.innerHTML = ''
+    allMovies = []
     return
   }
 
@@ -101,7 +146,8 @@ async function handleSearch(query) {
 
   try {
     const movies = await fetchMovies(trimmed)
-    renderMovies(movies)
+    allMovies = movies.filter(m => m.media_type === 'movie' || m.media_type === 'tv')
+    applyFilters()
   } catch (error) {
     resultsGrid.innerHTML = ''
     showStatus(error.message)
@@ -110,4 +156,12 @@ async function handleSearch(query) {
 
 searchInput.addEventListener('input', (event) => {
   handleSearch(event.target.value)
+})
+
+document.querySelector('#type-filter').addEventListener('change', applyFilters)
+document.querySelector('#sort-filter').addEventListener('change', applyFilters)
+
+document.querySelector('#year-filter').addEventListener('input', (e) => {
+  document.querySelector('#year-value').textContent = e.target.value
+  applyFilters()
 })

@@ -156,3 +156,49 @@ h1 {
 .skeleton-line.short {
   width: 50%;
 }
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: flex-end;
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background: white;
+  border-radius: 8px;
+  border: 1px solid #e8e8e8;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+  min-width: 140px;
+}
+
+.filter-group label {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #666;
+}
+
+.filter-group select {
+  padding: 0.4rem 0.6rem;
+  font-size: 0.85rem;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background: white;
+  cursor: pointer;
+  outline: none;
+}
+
+.filter-group select:focus {
+  border-color: #555;
+}
+
+.filter-group input[type="range"] {
+  width: 100%;
+  cursor: pointer;
+  accent-color: #555;
+}
