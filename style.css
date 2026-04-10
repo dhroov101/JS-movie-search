@@ -110,3 +110,49 @@ h1 {
   font-size: 0.75rem;
   color: #888;
 }
+
+.poster-placeholder {
+  width: 100%;
+  aspect-ratio: 2/3;
+  background: #e8e8e8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #aaa;
+  letter-spacing: 0.05em;
+}
+
+.card-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 0.25rem;
+}
+
+.card-type {
+  font-size: 0.7rem;
+  font-weight: 500;
+  background: #f0f0f0;
+  color: #555;
+  padding: 1px 6px;
+  border-radius: 4px;
+}
+
+.skeleton-poster {
+  width: 100%;
+  aspect-ratio: 2/3;
+  background: #e8e8e8;
+}
+
+.skeleton-line {
+  height: 10px;
+  background: #e8e8e8;
+  border-radius: 4px;
+  margin-top: 6px;
+}
+
+.skeleton-line.short {
+  width: 50%;
+}

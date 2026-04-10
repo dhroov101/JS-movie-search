@@ -37,28 +37,54 @@ async function fetchMovies(query) {
   return data.results
 }
 
+function createCard({ title, name, release_date, first_air_date, poster_path, id, media_type }) {
+  const displayTitle = title ?? name
+  const year = (release_date ?? first_air_date ?? '').slice(0, 4)
+  const poster = poster_path
+    ? `${IMG_BASE}${poster_path}`
+    : null
+
+  return `
+    <div class="movie-card" data-id="${id}" data-type="${media_type}">
+      ${poster
+        ? `<img src="${poster}" alt="${displayTitle}" loading="lazy">`
+        : `<div class="poster-placeholder">${displayTitle.slice(0, 2).toUpperCase()}</div>`
+      }
+      <div class="card-info">
+        <p class="card-title">${displayTitle}</p>
+        <div class="card-meta">
+          <span class="card-year">${year || 'Unknown'}</span>
+          <span class="card-type">${media_type === 'tv' ? 'TV' : 'Film'}</span>
+        </div>
+      </div>
+    </div>
+  `
+}
+
 function renderMovies(movies) {
   const filtered = movies.filter(m => m.media_type === 'movie' || m.media_type === 'tv')
 
-  const html = filtered.map(({ title, name, release_date, first_air_date, poster_path, id, media_type }) => {
-    const displayTitle = title ?? name
-    const year = (release_date ?? first_air_date ?? '').slice(0, 4)
-    const poster = poster_path
-      ? `${IMG_BASE}${poster_path}`
-      : 'https://placehold.co/300x450?text=No+Poster'
+  if (filtered.length === 0) {
+    showStatus('No movies or shows found.')
+    return
+  }
 
-    return `
-      <div class="movie-card" data-id="${id}" data-type="${media_type}">
-        <img src="${poster}" alt="${displayTitle}" loading="lazy">
-        <div class="card-info">
-          <p class="card-title">${displayTitle}</p>
-          <p class="card-year">${year}</p>
-        </div>
+  showStatus(`${filtered.length} result${filtered.length > 1 ? 's' : ''}`)
+
+  resultsGrid.innerHTML = filtered.map(createCard).join('')
+}
+
+function showSkeletons() {
+  const skeletons = Array.from({ length: 8 }, () => `
+    <div class="movie-card skeleton">
+      <div class="skeleton-poster"></div>
+      <div class="card-info">
+        <div class="skeleton-line"></div>
+        <div class="skeleton-line short"></div>
       </div>
-    `
-  }).join('')
-
-  resultsGrid.innerHTML = html || '<p style="color:#888;font-size:0.9rem">No movies or shows found.</p>'
+    </div>
+  `).join('')
+  resultsGrid.innerHTML = skeletons
 }
 
 async function handleSearch(query) {
@@ -70,14 +96,14 @@ async function handleSearch(query) {
     return
   }
 
-  showStatus('Searching...')
-  resultsGrid.innerHTML = ''
+  showSkeletons()
+  hideStatus()
 
   try {
     const movies = await fetchMovies(trimmed)
-    hideStatus()
     renderMovies(movies)
   } catch (error) {
+    resultsGrid.innerHTML = ''
     showStatus(error.message)
   }
 }
