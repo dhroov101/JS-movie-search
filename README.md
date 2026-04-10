@@ -3,7 +3,7 @@
 A vanilla JavaScript movie search app built with the TMDB API.
 No frameworks, no build tools — just HTML, CSS, and JS.
 
-Live: https://yourusername.github.io/movie-search
+Live: https://dhroov101.github.io/JS-movie-search/
 
 ## Features
 
